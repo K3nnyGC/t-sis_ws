@@ -1,0 +1,11 @@
+--Instalar mysql
+mysql-ctl install
+--Instalar phpMyAdmin
+phpmyadmin-ctl install
+--Iniciar mysql
+mysql-ctl start
+--En phpmyadmin cargar la base de datos BASE_DE_DATOS.sql
+
+Ruta del servicio 
+/api/student
+/api/students
