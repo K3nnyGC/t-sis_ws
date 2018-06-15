@@ -3,3 +3,4 @@ RewriteEngine On    # Turn on the rewriting engine
 #RewriteRule ^user/([a-zA-Z_-]*)$ user.php?dni=$1 [NC,L]
 RewriteRule api/teacher api/teacher.php
 RewriteRule api/student api/student.php
+RewriteRule api/specialt api/knowledge.php
