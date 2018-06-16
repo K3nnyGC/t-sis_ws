@@ -33,10 +33,12 @@ CREATE TABLE IF NOT EXISTS `tb_available_knowledge` (
   `tb_user_teacher_co_dni_teacher` varchar(8) NOT NULL,
   `tb_career_co_career` int(11) NOT NULL,
   `no_theme` varchar(256) NOT NULL,
+  `des_theme` varchar(500) NOT NULL,
+  `av_kn_price` double NOT NULL,
   PRIMARY KEY (`co_avai_know`),
   KEY `tb_available_knowledge_tb_career_FK` (`tb_career_co_career`),
   KEY `tb_available_knowledge_tb_user_teacher_FK` (`tb_user_teacher_co_dni_teacher`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -67,8 +69,6 @@ CREATE TABLE IF NOT EXISTS `tb_contract` (
   `date_advisory` date DEFAULT NULL,
   `estate_contract` int(11) DEFAULT NULL,
   `method_payment` int(11) DEFAULT NULL,
-  `nu_latitude` double DEFAULT NULL,
-  `nu_longitude` double DEFAULT NULL,
   `score_contract` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`co_contract`),
   KEY `tb_contract_tb_available_knowledge_FK` (`tb_available_knowledge_co_avai_know`),
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `tb_user_teacher` (
   `des_user_lasttname` varchar(256) NOT NULL,
   `des_user_address` varchar(256) DEFAULT NULL,
   `des_user_phone` varchar(16) DEFAULT NULL,
-  `co_user_card` varchar(32) DEFAULT NULL,
+  `co_user_card` int(11) DEFAULT NULL,
   `num_userd_credit_card` varchar(32) DEFAULT NULL,
   `num_user_nu_latitude` double DEFAULT NULL,
   `num_user_nu_longitude` double DEFAULT NULL,
@@ -175,6 +175,13 @@ CREATE TABLE IF NOT EXISTS `tb_user_teacher` (
   `prom_score` double DEFAULT NULL,
   PRIMARY KEY (`co_dni_teacher`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `tb_user_teacher`
+--
+
+INSERT INTO `tb_user_teacher` (`co_dni_teacher`, `des_user_email`, `des_user_password`, `des_user_name`, `des_user_lasttname`, `des_user_address`, `des_user_phone`, `co_user_card`, `num_userd_credit_card`, `num_user_nu_latitude`, `num_user_nu_longitude`, `status_user`, `prom_score`) VALUES
+('12345678', 'correo@mail.com', '202cb962ac59075b964b07152d234b70', 'Kenny', 'Gonzales', 'Av Calle numero', '987654321', 1, '1', 123456467543, 8.7635424, 2, 4.342);
 
 --
 -- Restricciones para tablas volcadas
@@ -212,4 +219,3 @@ ALTER TABLE `tb_teacher_detail_uni`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-

@@ -1,11 +1,13 @@
 <?php
 
 Class Specialty {
-	function __construct($co_avai_know,$tb_user_teacher_co_dni_teacher,$tb_career_co_career,$no_theme) {
+	function __construct($co_avai_know,$tb_user_teacher_co_dni_teacher,$tb_career_co_career,$no_theme,$des_theme,$av_kn_price) {
       $this->co_avai_know = $co_avai_know;
       $this->tb_user_teacher_co_dni_teacher = $tb_user_teacher_co_dni_teacher;
       $this->tb_career_co_career = $tb_career_co_career;
-      $this->no_theme = $no_theme;   		
+      $this->no_theme = $no_theme;
+      $this->des_theme = $des_theme;
+      $this->av_kn_price = $av_kn_price;  		
    }
 }
 
@@ -13,12 +15,12 @@ Class SpecialtyManager extends Conection {
 	private $table = "tb_available_knowledge";
 	
 	
-	public function create ($co_avai_know,$tb_user_teacher_co_dni_teacher,$tb_career_co_career,$no_theme) {
+	public function create ($co_avai_know,$tb_user_teacher_co_dni_teacher,$tb_career_co_career,$no_theme,$av_kn_price) {
 		
-   		$data = $this->make_query("INSERT INTO $this->table (co_avai_know, tb_user_teacher_co_dni_teacher, tb_career_co_career, no_theme) VALUES ('', '$tb_user_teacher_co_dni_teacher', '$tb_career_co_career', '$no_theme' )");
+   		$data = $this->make_query("INSERT INTO $this->table (co_avai_know, tb_user_teacher_co_dni_teacher, tb_career_co_career, no_theme, des_theme, av_kn_price) VALUES ('', '$tb_user_teacher_co_dni_teacher', '$tb_career_co_career', '$no_theme', '$des_theme', $av_kn_price )");
 
    		if($data){
-   			return new Specialty($co_avai_know,$tb_user_teacher_co_dni_teacher,$tb_career_co_career,$no_theme);
+   			return new Specialty($co_avai_know,$tb_user_teacher_co_dni_teacher,$tb_career_co_career,$no_theme,$des_theme,$av_kn_price);
    		} else {
    			return false;
    		}
@@ -30,7 +32,7 @@ Class SpecialtyManager extends Conection {
 		$data = $this->make_query("SELECT * FROM $this->table where co_avai_know = '$co_avai_know'");
 		if ($data){
 			if ($row = $data->fetch_assoc()){
-				return new Specialty($row['co_avai_know'],$row['tb_user_teacher_co_dni_teacher'],$row['tb_career_co_career'],$row['no_theme']);
+				return new Specialty($row['co_avai_know'],$row['tb_user_teacher_co_dni_teacher'],$row['tb_career_co_career'],$row['no_theme'],$row['des_theme'],$row['av_kn_price']);
 			}
 			return false;
 		}
@@ -42,7 +44,7 @@ Class SpecialtyManager extends Conection {
       if ($data){
          $specialties=[];
             while ($row = $data->fetch_assoc()){
-               $specialties[] = new Specialty($row['co_avai_know'],$row['tb_user_teacher_co_dni_teacher'],$row['tb_career_co_career'],$row['no_theme']);
+               $specialties[] = new Specialty($row['co_avai_know'],$row['tb_user_teacher_co_dni_teacher'],$row['tb_career_co_career'],$row['no_theme'],$row['des_theme'],$row['av_kn_price']);
             }
 
             return $specialties;
@@ -56,7 +58,7 @@ Class SpecialtyManager extends Conection {
    		if ($data){
    			$specialties=[];
    			while ($row = $data->fetch_assoc()){
-   				$specialties[] = new Specialty($row['co_avai_know'],$row['tb_user_teacher_co_dni_teacher'],$row['tb_career_co_career'],$row['no_theme']);
+   				$specialties[] = new Specialty($row['co_avai_know'],$row['tb_user_teacher_co_dni_teacher'],$row['tb_career_co_career'],$row['no_theme'],$row['des_theme'],$row['av_kn_price']);
    			}
 
    			return $specialties;
@@ -70,12 +72,14 @@ Class SpecialtyManager extends Conection {
          $tb_user_teacher_co_dni_teacher = $specialty->tb_user_teacher_co_dni_teacher;
          $tb_career_co_career = $specialty->tb_career_co_career;
          $no_theme = $specialty->no_theme;
+         $des_theme = $specialty->des_theme;
+         $av_kn_price = $specialty->av_kn_price;
 
    		if (!$this->findById($co_avai_know)){
    			return false;
    		}
 
-   		$data = $this->make_query("UPDATE $this->table SET tb_user_teacher_co_dni_teacher = '$tb_user_teacher_co_dni_teacher', tb_career_co_career = '$tb_career_co_career', no_theme = '$no_theme' WHERE co_avai_know='$co_avai_know' ");
+   		$data = $this->make_query("UPDATE $this->table SET tb_user_teacher_co_dni_teacher = '$tb_user_teacher_co_dni_teacher', tb_career_co_career = '$tb_career_co_career', no_theme = '$no_theme', des_theme = '$des_theme', av_kn_price = $av_kn_price  WHERE co_avai_know='$co_avai_know' ");
   		  
 
    		if ($data){
@@ -139,7 +143,7 @@ class SpecialtyService {
          $tag = $this->keys[count($this->keys)-1];
       }
 
-      //MANEJO DE STUDENT
+      //MANEJO 1
       if(isset($dni)&!isset($tag)){
          $specialty = $this->uc->findById($dni);
       
@@ -154,7 +158,7 @@ class SpecialtyService {
          }
          return true;
       } 
-      //MANEJO DE STUDENTS
+      //MANEJO 2
       if(!isset($dni)&isset($tag)){
          $specialties = $this->uc->show();
       
@@ -186,9 +190,9 @@ class SpecialtyService {
       //MANEJO DE STUDENT
       if ($this->keys[count($this->keys)-1]=="specialty"){
          $vpost = json_decode(file_get_contents('php://input'),true);
-         if (isset($vpost['tb_user_teacher_co_dni_teacher'])&isset($vpost['tb_career_co_career'])&isset($vpost['no_theme'])){
+         if (isset($vpost['tb_user_teacher_co_dni_teacher'])&isset($vpost['tb_career_co_career'])&isset($vpost['no_theme'])&isset($vpost['des_theme'])&isset($vpost['av_kn_price'])){
             
-            $specialty = $this->uc->create($vpost['co_avai_know'],$vpost['tb_user_teacher_co_dni_teacher'],$vpost['tb_career_co_career'],$vpost['no_theme']);
+            $specialty = $this->uc->create('',$vpost['tb_user_teacher_co_dni_teacher'],$vpost['tb_career_co_career'],$vpost['no_theme'],$vpost['des_theme'],$vpost['av_kn_price']);
             if($specialty){
                $this->code=200;
                $this->message = "Tema creado correctamente";
@@ -242,7 +246,7 @@ class SpecialtyService {
          $vpost = json_decode(file_get_contents('php://input'),true);
          $vpost['co_avai_know'] = $this->keys[count($this->keys)-1];
 
-         if (isset($vpost['tb_user_teacher_co_dni_teacher'])||isset($vpost['tb_career_co_career'])||isset($vpost['no_theme']) ){
+         if (isset($vpost['tb_user_teacher_co_dni_teacher'])||isset($vpost['tb_career_co_career'])||isset($vpost['no_theme'])||isset($vpost['des_theme'])||isset($vpost['av_kn_price']) ){
 
             $specialty = $this->uc->findById($vpost['co_avai_know']);
 
@@ -250,18 +254,20 @@ class SpecialtyService {
                if (!isset($vpost['tb_user_teacher_co_dni_teacher'])){  $vpost['tb_user_teacher_co_dni_teacher']=$specialty->tb_user_teacher_co_dni_teacher; }
                if (!isset($vpost['tb_career_co_career'])){  $vpost['tb_career_co_career']=$specialty->tb_career_co_career; }
                if (!isset($vpost['no_theme'])){  $vpost['no_theme']=$specialty->no_theme; }
+               if (!isset($vpost['des_theme'])){ $vpost['des_theme']=$specialty->des_theme;}
+               if (!isset($vpost['av_kn_price'])){ $vpost['av_kn_price']=$specialty->av_kn_price;}
                
 
 
-               $specialtyA = $this->uc->update(new Specialty($vpost['co_avai_know'],$vpost['tb_user_teacher_co_dni_teacher'],$vpost['tb_career_co_career'],$vpost['no_theme']));
+               $specialtyA = $this->uc->update(new Specialty($vpost['co_avai_know'],$vpost['tb_user_teacher_co_dni_teacher'],$vpost['tb_career_co_career'],$vpost['no_theme'],$vpost['des_theme'],$vpost['av_kn_price']));
 
                if($specialtyA){
                   $this->code=200;
-                  $this->message = "Estudiante actualizado";
+                  $this->message = "Tema actualizado";
                   $this->data = (array) $specialtyA;
                } else {
                   $this->code=404;
-                  $this->message = "Estudiante no existe";
+                  $this->message = "Tema no existe";
                   $this->data = NULL;
                }
 
@@ -269,7 +275,7 @@ class SpecialtyService {
 
             } else {
                $this->code=404;
-               $this->message = "Estudiante no existe";
+               $this->message = "Tema no existe";
                $this->data = NULL;
             }
             return true;      
