@@ -163,6 +163,7 @@ CREATE TABLE IF NOT EXISTS `students` (
   `phone` varchar(9) DEFAULT NULL,
   `card` varchar(32) DEFAULT NULL,
   `token` varchar(32) DEFAULT NULL,
+  `picture` text,
   PRIMARY KEY (`dni_student`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

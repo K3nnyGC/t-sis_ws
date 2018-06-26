@@ -5,9 +5,8 @@ require "../core/autoload.php";
 
 //TOKEN Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 
-$auth = new Auth();
-if (!$auth->access){
-	response($auth->code,$auth->message,NULL);
+if (!Auth::checkKey()){
+	response(Auth::$code,Auth::$message,NULL);
 	exit();
 }
 
@@ -16,8 +15,7 @@ response($ss->code,$ss->message,$ss->data);
 
 //Funciones
 
-function response($status,$status_message,$data)
-{
+function response($status,$status_message,$data) {
 	header("HTTP/1.1 ".$status);
 
 	
@@ -32,3 +30,5 @@ function response($status,$status_message,$data)
 	$json_response = json_encode($response);
 	echo $json_response;
 }
+
+?>
