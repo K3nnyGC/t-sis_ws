@@ -5,3 +5,4 @@ RewriteRule api/teacher api/teacher.php
 RewriteRule api/student api/student.php
 RewriteRule api/specialt api/knowledge.php
 RewriteRule api/availabilit api/availability.php
+RewriteRule api/advisor api/advisor.php

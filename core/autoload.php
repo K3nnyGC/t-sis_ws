@@ -7,5 +7,7 @@ include_once "knowledge.class.php";
 include_once "auth.class.php";
 include_once "availability.class.php";
 
+include_once "advisor.class.php";
+
 
 ?>
