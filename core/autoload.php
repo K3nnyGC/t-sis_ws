@@ -1,13 +1,12 @@
 <?php
 
 include_once "conection.class.php";
-include_once "student.class.php";
-include_once "teacher.class.php";
-include_once "knowledge.class.php";
 include_once "auth.class.php";
-include_once "availability.class.php";
-
+include_once "service.class.php";
 include_once "advisor.class.php";
+include_once "student.class.php";
+include_once "available.class.php";
+include_once "detail.class.php";
 
 
 ?>
