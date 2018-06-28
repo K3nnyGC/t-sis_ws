@@ -1,7 +1,7 @@
 <?php
 
 Class Student {
-   function __construct($dni_student,$name,$lastname,$email,$address,$password,$phone,$card,$token,$picture) {
+   function __construct($dni_student,$name,$lastname,$email,$address,$password,$phone,$card,$token,$picture,$status_student) {
       $this->dni_student = $dni_student;
       $this->name = $name;
       $this->lastname = $lastname;
@@ -12,6 +12,7 @@ Class Student {
       $this->card = $card;
       $this->token = $token;
       $this->picture = $picture;
+      $this->status_student = $status_student;
    }
 }
 
@@ -19,12 +20,12 @@ Class StudentManager extends Conection {
    private $table = "students";
    
    
-   public function create ($dni_student,$name,$lastname,$email,$address,$password,$phone,$card,$token,$picture) {
+   public function create ($dni_student,$name,$lastname,$email,$address,$password,$phone,$card,$token,$picture,$status_student) {
       
-         $data = $this->make_query("INSERT INTO $this->table (dni_student, name, lastname, email, address, password, phone, card, token, picture ) VALUES ('$dni_student', '$name', '$lastname', '$email', '$address', md5('$password'), '$phone', '$card', '$token', '$picture' )");
+         $data = $this->make_query("INSERT INTO $this->table (dni_student, name, lastname, email, address, password, phone, card, token, picture, status_student ) VALUES ('$dni_student', '$name', '$lastname', '$email', '$address', md5('$password'), '$phone', '$card', '$token', '$picture', $status_student )");
 
          if($data){
-            return new Student($dni_student,$name,$lastname,$email,$address,md5($password),$phone,$card, $token, $picture);
+            return new Student($dni_student,$name,$lastname,$email,$address,md5($password),$phone,$card, $token, $picture, $status_student);
          } else {
             return false;
          }
@@ -45,7 +46,29 @@ Class StudentManager extends Conection {
                                $row['phone'],
                                $row['card'],
                                $row['token'],
-                               $row['picture']);
+                               $row['picture'],
+                               $row['status_student']);
+         }
+         return false;
+      }
+      return false;
+   }
+
+   public function findByToken($token){
+      $data = $this->make_query("SELECT * FROM $this->table where token = '$token'");
+      if ($data){
+         if ($row = $data->fetch_assoc()){
+            return new Student($row['dni_student'],
+                               $row['name'],
+                               $row['lastname'],
+                               $row['email'],
+                               $row['address'],
+                               $row['password'],
+                               $row['phone'],
+                               $row['card'],
+                               $row['token'],
+                               $row['picture'],
+                               $row['status_student']);
          }
          return false;
       }
@@ -66,7 +89,8 @@ Class StudentManager extends Conection {
                                          $row['phone'],
                                          $row['card'],
                                          $row['token'],
-                                         $row['picture']);
+                                         $row['picture'],
+                                         $row['status_student']);
             }
 
             return $students;
@@ -86,12 +110,13 @@ Class StudentManager extends Conection {
          $card = $student->card;
          $token = $student->token;
          $picture = $student->picture;
+         $status_student = $student->status_student;
 
          if (!$this->findById($dni_student)){
             return false;
          }
 
-         $data = $this->make_query("UPDATE $this->table SET name = '$name', lastname = '$lastname', email = '$email', address = '$address', password = '$password', phone = '$phone', card = '$card', token = '$token', picture = '$picture' WHERE dni_student='$dni_student' ");
+         $data = $this->make_query("UPDATE $this->table SET name = '$name', lastname = '$lastname', email = '$email', address = '$address', password = '$password', phone = '$phone', card = '$card', token = '$token', picture = '$picture', status_student = $status_student WHERE dni_student='$dni_student' ");
         
 
          if ($data){
@@ -116,34 +141,11 @@ Class StudentManager extends Conection {
 
 }
 
-class StudentService {
+class StudentService extends Service {
    
    function __construct(){
-      $this->action = $_SERVER['REQUEST_METHOD'];
-      $this->keys = explode("/", $_SERVER['REQUEST_URI']);
       $this->uc = new StudentManager();
-
-      $this->code = 200;
-      $this->message = "";
-      $this->data = NULL;      
-
-      switch ($this->action) {
-         case "GET":
-            $this->getMethod();
-            break;
-         case "POST":
-            $this->postMethod();
-            break;
-         case "DELETE":
-            $this->deleteMethod();
-            break;
-         case "PUT":
-            $this->putMethod();
-            break;
-         default:
-            break;
-      }
-
+      parent::__construct();
    }
 
    public function getMethod(){
@@ -214,8 +216,10 @@ class StudentService {
          if ($obligatorios){
             
             if (!isset($vpost['card'])) {$vpost['card']="-";}
-            if (!isset($vpost['token'])) {$vpost['token']="-";}
+            //if (!isset($vpost['token'])) {$vpost['token']="-";}
             if (!isset($vpost['picture'])) {$vpost['picture']="";}
+            $vpost['token'] = base64_encode("".$vpost['dni_student'].":".md5($vpost['password']));
+            $vpost['status_student']=0;
 
 
 
@@ -229,13 +233,21 @@ class StudentService {
                           $vpost['phone'],
                           $vpost['card'],
                           $vpost['token'],
-                          $vpost['picture']);
+                          $vpost['picture'],
+                          $vpost['status_student']);
 
 
                if($student){
                   $this->code=200;
                   $this->message = "Estudiante creado correctamente";
                   $this->data = (array) $student;
+                  //Enviar mail
+                  $email = new MailManager();
+                  $email->setToken("student/".$student->token)
+                        ->setDefaultMessage()
+                        ->add_mail($student->email,$student->name)
+                        ->setTheme("Bienvenido a T-Sys Estudiante")
+                        ->go();
                } else {
                   $this->code=500;
                   $this->message = "Error al crear";
@@ -292,8 +304,9 @@ class StudentService {
                      isset($vpost['password'])||
                      isset($vpost['phone'])||
                      isset($vpost['card'])||
-                     isset($vpost['token'])||
-                     isset($vpost['picture']);
+                     isset($vpost['picture'])||
+                     isset($vpost['status_student']);
+        //isset($vpost['token'])||
 
          if ($opciones) {
 
@@ -309,8 +322,10 @@ class StudentService {
                !isset($vpost['password']) ? $vpost['password']=$student->password : "";
                !isset($vpost['phone']) ? $vpost['phone']=$student->phone : "";
                !isset($vpost['card']) ? $vpost['card']=$student->card : "";
-               !isset($vpost['token']) ? $vpost['token']=$student->token : "";
+               //!isset($vpost['token']) ? $vpost['token']=$student->token : "";
+               $vpost['token'] = $student->token;
                !isset($vpost['picture']) ? $vpost['picture']=$student->picture : "";
+               !isset($vpost['status_student']) ? $vpost['status_student']=$student->status_student : "";
 
 
                $studentA = $this->uc->update(new Student($vpost['dni_student'],
@@ -322,7 +337,8 @@ class StudentService {
                                                          $vpost['phone'],
                                                          $vpost['card'],
                                                          $vpost['token'],
-                                                         $vpost['picture']));
+                                                         $vpost['picture'],
+                                                         $vpost['status_student']));
 
                if($studentA){
                   $this->code=200;

@@ -2,10 +2,10 @@
 
 Class Conection {
 	private function open_conection(){
-		$db_host="localhost";
-		$db_user="kennygonzales";
-		$db_password="";
-		$db_database="t_sys";
+		$db_host= DB_HOST;
+		$db_user= DB_USER;
+		$db_password= DB_PASSWORD;
+		$db_database= DB_NAME;
 		$conection = mysqli_connect($db_host,$db_user, $db_password, $db_database);
 		if (mysqli_connect_errno()){
 			return false;

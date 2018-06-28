@@ -1,5 +1,7 @@
 <?php
 
+include_once "../aplication/env.php";
+include_once "MailManager.class.php";
 include_once "conection.class.php";
 include_once "auth.class.php";
 include_once "service.class.php";

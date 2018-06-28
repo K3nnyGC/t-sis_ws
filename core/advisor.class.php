@@ -62,6 +62,33 @@ Class AdvisorManager extends Conection {
 		return false;
    }
 
+   public function findByToken($token){
+    $data = $this->make_query("SELECT * FROM $this->table where token = '$token'");
+    if ($data){
+      if ($row = $data->fetch_assoc()){
+        return new Advisor($row['dni_advisor'],
+                               $row['name'],
+                               $row['lastname'],
+                               $row['email'],
+                               $row['address'],
+                               $row['pasword'],
+                               $row['phone'],
+                               $row['card'],
+                               $row['credit_card'],
+                               $row['latitude'],
+                               $row['longitude'],
+                               $row['status_advisor'],
+                               $row['prom_score'],
+                               $row['token'],
+                               $row['picture']);
+      }
+      return false;
+    }
+    return false;
+   }
+
+
+
    public function show(){
    		$data = $this->make_query("SELECT * FROM $this->table ");
    		if ($data){
@@ -136,34 +163,11 @@ Class AdvisorManager extends Conection {
 
 }
 
-class AdvisorService {
+class AdvisorService extends Service {
    
    function __construct(){
-      $this->action = $_SERVER['REQUEST_METHOD'];
-      $this->keys = explode("/", $_SERVER['REQUEST_URI']);
       $this->uc = new AdvisorManager();
-
-      $this->code = 200;
-      $this->message = "";
-      $this->data = NULL;      
-
-      switch ($this->action) {
-         case "GET":
-            $this->getMethod();
-            break;
-         case "POST":
-            $this->postMethod();
-            break;
-         case "DELETE":
-            $this->deleteMethod();
-            break;
-         case "PUT":
-            $this->putMethod();
-            break;
-         default:
-            break;
-      }
-
+      parent::__construct();
    }
 
    public function getMethod(){
@@ -237,9 +241,11 @@ class AdvisorService {
             
             if (!isset($vpost['card'])) {$vpost['card']="-";}
             if (!isset($vpost['credit_card'])) {$vpost['credit_card']="-";}
-            if (!isset($vpost['status_advisor'])) {$vpost['status_advisor']=0;}
+            //if (!isset($vpost['status_advisor'])) {$vpost['status_advisor']=0;}
+            $vpost['status_advisor']=0;
             if (!isset($vpost['prom_score'])) {$vpost['prom_score']=0;}
-            if (!isset($vpost['token'])) {$vpost['token']="-";}
+            //if (!isset($vpost['token'])) {$vpost['token']="-";}
+            $vpost['token']=base64_encode("".$vpost['dni_advisor'].":".md5($vpost['pasword']));
             if (!isset($vpost['picture'])) {$vpost['picture']="";}
 
 
@@ -266,6 +272,13 @@ class AdvisorService {
                   $this->code=200;
                   $this->message = "Docente creado correctamente";
                   $this->data = (array) $advisor;
+                  //Enviar mail
+                  $email = new MailManager();
+                  $email->setToken("advisor/".$advisor->token)
+                        ->setDefaultMessage()
+                        ->add_mail($advisor->email,$advisor->name)
+                        ->setTheme("Bienvenido a T-Sys Asesor")
+                        ->go();
                } else {
                   $this->code=500;
                   $this->message = "Error al crear";
@@ -327,8 +340,8 @@ class AdvisorService {
                      isset($vpost['longitude'])||
                      isset($vpost['status_advisor'])||
                      isset($vpost['prom_score'])||
-                     isset($vpost['token'])||
                      isset($vpost['picture']);
+        //isset($vpost['token'])||
 
          if ($opciones) {
 
@@ -349,7 +362,8 @@ class AdvisorService {
                !isset($vpost['longitude']) ? $vpost['longitude']=$advisor->longitude : "";
                !isset($vpost['status_advisor']) ? $vpost['status_advisor']=$advisor->status_advisor : "";
                !isset($vpost['prom_score']) ? $vpost['prom_score']=$advisor->prom_score : "";
-               !isset($vpost['token']) ? $vpost['token']=$advisor->token : "";
+               //!isset($vpost['token']) ? $vpost['token']=$advisor->token : "";
+               $vpost['token'] = $advisor->token;
                !isset($vpost['picture']) ? $vpost['picture']=$advisor->picture : "";
 
 

@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `advisors` (
   `longitude` double NOT NULL,
   `status_advisor` int(11) DEFAULT NULL,
   `prom_score` double DEFAULT NULL,
-  `token` varchar(32) DEFAULT NULL,
+  `token` varchar(100) DEFAULT NULL,
   `picture` text,
   PRIMARY KEY (`dni_advisor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -162,8 +162,9 @@ CREATE TABLE IF NOT EXISTS `students` (
   `address` varchar(256) DEFAULT NULL,
   `phone` varchar(9) DEFAULT NULL,
   `card` varchar(32) DEFAULT NULL,
-  `token` varchar(32) DEFAULT NULL,
+  `token` varchar(100) DEFAULT NULL,
   `picture` text,
+  `status_student` int(11) DEFAULT NULL,
   PRIMARY KEY (`dni_student`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
