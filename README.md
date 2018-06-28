@@ -11,7 +11,7 @@ mysql-ctl start<br>
 Este archivo contiene las constantes de la aplicacion:<br>
 
 //Raiz del proyecto<br>
-define('RAIZ', "http://localhost:8080/proyectos/6%20Rest");<br>
+define('RAIZ', "DIRECCION DE LA RAIZ");<br>
 
 //Constantes de Base de datos<br>
 define('DB_HOST', "Mi_HOST");<br>
