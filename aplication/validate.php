@@ -21,7 +21,6 @@ if ($keys[count($keys)-1]=="validate.php"){
 				$user = $am->findByToken($token);
 				if ($user){
 					$user->status_advisor=1;
-					var_dump($user);
 					$new_user = $am->update($user);
 				}
 			break;
@@ -95,7 +94,6 @@ if ($new_user){
 						<b>Nombre:</b> <?="$new_user->name $new_user->lastname" ?><br> 
 						<b>Correo:</b> <?="$new_user->email" ?><br>
 						<b>Direcci&oacute;n:</b> <?="$new_user->address" ?><br>
-						<br>
 						<br>
 					</p>
 			</div>

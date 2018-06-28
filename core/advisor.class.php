@@ -179,17 +179,22 @@ class AdvisorService extends Service {
          $tag = $this->keys[count($this->keys)-1];
       }
 
+      if ($this->keys[count($this->keys)-1]=="details"){
+        $dni = $this->keys[count($this->keys)-2];
+        $tag = $this->keys[count($this->keys)-1];
+      }
+
       
       if(isset($dni)&!isset($tag)){
          $advisor = $this->uc->findById($dni);
       
          if($advisor){
             $this->code=200;
-            $this->message = "Docente encontrado";
+            $this->message = "Asesor encontrado";
             $this->data = (array) $advisor;
          } else {
             $this->code=404;
-            $this->message = "Docente no encontrado";
+            $this->message = "Asesor no encontrado";
             $this->data = NULL;
          }
          return true;
@@ -204,14 +209,49 @@ class AdvisorService extends Service {
                $advisorsarray[] = (array) $advisors[$i];
             }
             $this->code=200;
-            $this->message = "Docentes encontrados";
+            $this->message = "Asesors encontrados";
             $this->data = $advisorsarray;
          } else {
             $this->code=404;
-            $this->message = "No existen Docentes";
+            $this->message = "No existen Asesors";
             $this->data = NULL;
          }
          return true;
+      }
+
+
+      if (isset($dni)&isset($tag)){
+        switch ($tag) {
+          case "details":
+              $dm = new DetailManager();
+              $advisor = $this->uc->findById($dni);
+              if ($advisor){
+                $details = $dm->showByAdvisor($advisor->dni_advisor);
+                if($details){
+                  $detailsarray=[];
+                  for ($i=0; $i < count($details) ; $i++) { 
+                       $detailsarray[] = (array) $details[$i];
+                  }
+                  $this->code=200;
+                  $this->message = "Grados del Asesor encontrados";
+                  $this->data = $detailsarray;
+                } else {
+                  $this->code=404;
+                  $this->message = "No existen Grados para el Asesor";
+                  $this->data = NULL;
+                }
+                return true;
+              } else {
+                  $this->code=404;
+                  $this->message = "El Asesor no existe";
+                  $this->data = NULL;
+              }
+            break;
+          
+          default:
+            break;
+        }
+
       } else {
          $this->code=400;
          $this->message = "Solicitud Invalida";
@@ -270,7 +310,7 @@ class AdvisorService extends Service {
 
                if($advisor){
                   $this->code=200;
-                  $this->message = "Docente creado correctamente";
+                  $this->message = "Asesor creado correctamente";
                   $this->data = (array) $advisor;
                   //Enviar mail
                   $email = new MailManager();
@@ -309,11 +349,11 @@ class AdvisorService extends Service {
    
          if($advisor){
             $this->code=200;
-            $this->message = "Docente eliminado";
+            $this->message = "Asesor eliminado";
             $this->data = (array) $advisor;
          } else {
             $this->code=404;
-            $this->message = "Docente no existe";
+            $this->message = "Asesor no existe";
             $this->data = NULL;
          }
       } else {
@@ -385,7 +425,7 @@ class AdvisorService extends Service {
 
                if($advisorA){
                   $this->code=200;
-                  $this->message = "Docente actualizado";
+                  $this->message = "Asesor actualizado";
                   $this->data = (array) $advisorA;
                } else {
                   $this->code=500;
@@ -396,7 +436,7 @@ class AdvisorService extends Service {
 
             } else {
                $this->code=404;
-               $this->message = "Docente no existe";
+               $this->message = "Asesor no existe";
                $this->data = NULL;
             }
      

@@ -28,6 +28,7 @@ define('PASSWORD_MAIL', "PASSWORD DEL CORREO");<br>
 
 # EndPoints 
 GET POST PUT DELETE /api/advisor<br>
+GET                 /api/advisor/{id}/details<br>
 GET POST PUT DELETE /api/student<br>
 GET POST PUT DELETE /api/available<br>
 GET POST PUT DELETE /api/detail<br>

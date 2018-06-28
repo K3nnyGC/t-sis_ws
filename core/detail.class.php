@@ -11,14 +11,21 @@ Class Detail {
 }
 
 Class DetailManager extends Conection {
-   private $table = "advisors_detailss";
+   private $table = "advisors_details";
    
    
    public function create ($code_detail,$dni_advisor,$code_university,$code_grade,$year_egress) {
       
-         $data = $this->make_query("INSERT INTO $this->table (code_detail, dni_advisor, code_university, code_grade, year_egress ) VALUES ('$code_detail', '$dni_advisor', '$code_university', '$code_grade', '$year_egress' )");
+         $data = $this->make_query("INSERT INTO $this->table (code_detail, dni_advisor, code_university, code_grade, year_egress ) VALUES ('', '$dni_advisor', $code_university, $code_grade, $year_egress )");
 
          if($data){
+            $maximo = $this->make_query("SELECT MAX(code_detail) maximo FROM $this->table ");
+
+            if ($maximo) {
+              $code_detail = $maximo->fetch_assoc()['maximo']+0-0;
+            } else {
+               $code_detail = '';
+            }
             return new Detail($code_detail,$dni_advisor,$code_university,$code_grade,$year_egress );
          } else {
             return false;
@@ -42,8 +49,42 @@ Class DetailManager extends Conection {
       return false;
    }
 
+   public function findByPK($dni_advisor,$code_university,$code_grade){
+      $data = $this->make_query("SELECT * FROM $this->table WHERE dni_advisor='$dni_advisor' AND code_university = $code_university AND code_grade = $code_grade");
+      if ($data){
+         if ($row = $data->fetch_assoc()){
+            return new Detail($row['code_detail'],
+                               $row['dni_advisor'],
+                               $row['code_university'],
+                               $row['code_grade'],
+                               $row['year_egress']);
+         }
+         return false;
+      }
+      return false;
+   }
+
    public function show(){
          $data = $this->make_query("SELECT * FROM $this->table ");
+         if ($data){
+            $details=[];
+            while ($row = $data->fetch_assoc()){
+               $details[] = new Detail($row['code_detail'],
+                                         $row['dni_advisor'],
+                                         $row['code_university'],
+                                         $row['code_grade'],
+                                         $row['year_egress']);
+            }
+
+            return $details;
+         }
+
+         return false;
+   }
+
+
+   public function showByAdvisor($dni_advisor){
+         $data = $this->make_query("SELECT * FROM $this->table WHERE dni_advisor = '$dni_advisor'");
          if ($data){
             $details=[];
             while ($row = $data->fetch_assoc()){
@@ -162,13 +203,17 @@ class DetailService extends Service {
          $vpost = json_decode(file_get_contents('php://input'),true);
 
          $obligatorios = isset($vpost['dni_advisor'])&
-                         isset($vpost['code_detail'])&
-                         isset($vpost['code_grade']);
+                         isset($vpost['code_university'])&
+                         isset($vpost['code_grade'])&
+                         isset($vpost['year_egress']);
 
          if ($obligatorios){
             
-            if (!$this->uc->findById($vpost['code_detail'])){
-               $detail = $this->uc->create($vpost['code_detail'],
+            if (!$this->uc->findByPK($vpost['dni_advisor'],
+                                     $vpost['code_university'],
+                                     $vpost['code_grade'])){
+
+               $detail = $this->uc->create('',
                           $vpost['dni_advisor'],
                           $vpost['code_university'],
                           $vpost['code_grade'],
