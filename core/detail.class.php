@@ -273,10 +273,7 @@ class DetailService extends Service {
          $vpost = json_decode(file_get_contents('php://input'),true);
          $vpost['code_detail'] = $this->keys[count($this->keys)-1];
 
-         $opciones = isset($vpost['dni_advisor'])||
-                     isset($vpost['code_university'])||
-                     isset($vpost['code_grade'])||
-                     isset($vpost['year_egress']);
+         $opciones = isset($vpost['year_egress']);
 
          if ($opciones) {
 

@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `advisors_details` (
 --
 
 CREATE TABLE IF NOT EXISTS `availables` (
-  `code_available_time` int(11) NOT NULL,
+  `code_available_time` int(11) NOT NULL AUTO_INCREMENT,
   `dni_advisor` varchar(8) NOT NULL,
   `date` date NOT NULL,
   `hour` int(11) NOT NULL,

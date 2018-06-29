@@ -19,6 +19,13 @@ Class AvailableManager extends Conection {
          $data = $this->make_query("INSERT INTO $this->table (code_available_time, dni_advisor, `date`, `hour`, status_available ) VALUES ('', '$dni_advisor', '$date', $hour, $status_available )");
 
          if($data){
+            $maximo = $this->make_query("SELECT MAX(code_available_time) maximo FROM $this->table ");
+
+            if ($maximo) {
+              $code_available_time = $maximo->fetch_assoc()['maximo']+0-0;
+            } else {
+               $code_available_time = '';
+            }
             return new Available($code_available_time,$dni_advisor,$date,$hour,$status_available );
          } else {
             return false;
@@ -42,8 +49,41 @@ Class AvailableManager extends Conection {
       return false;
    }
 
+   public function findByPK($dni_advisor,$date,$hour){
+      $data = $this->make_query("SELECT * FROM $this->table WHERE dni_advisor='$dni_advisor' AND `date` = '$date' AND `hour` = $hour ");
+      if ($data){
+         if ($row = $data->fetch_assoc()){
+            return new Available($row['code_available_time'],
+                               $row['dni_advisor'],
+                               $row['date'],
+                               $row['hour'],
+                               $row['status_available']);
+         }
+         return false;
+      }
+      return false;
+   }
+
    public function show(){
          $data = $this->make_query("SELECT * FROM $this->table ");
+         if ($data){
+            $availables=[];
+            while ($row = $data->fetch_assoc()){
+               $availables[] = new Available($row['code_available_time'],
+                                         $row['dni_advisor'],
+                                         $row['date'],
+                                         $row['hour'],
+                                         $row['status_available']);
+            }
+
+            return $availables;
+         }
+
+         return false;
+   }
+
+   public function showByAdvisor($dni_advisor){
+         $data = $this->make_query("SELECT * FROM $this->table WHERE dni_advisor = '$dni_advisor'");
          if ($data){
             $availables=[];
             while ($row = $data->fetch_assoc()){
@@ -162,13 +202,17 @@ class AvailableService extends Service {
          $vpost = json_decode(file_get_contents('php://input'),true);
 
          $obligatorios = isset($vpost['dni_advisor'])&
-                         isset($vpost['code_available_time'])&
+                         isset($vpost['date'])&
                          isset($vpost['hour']);
 
          if ($obligatorios){
-            
-            if (!$this->uc->findById($vpost['code_available_time'])){
-               $available = $this->uc->create($vpost['code_available_time'],
+            !isset($vpost['status_available']) ? $vpost['status_available'] = 0 : "";
+
+            if (!$this->uc->findByPK($vpost['dni_advisor'],
+                                     $vpost['date'],
+                                     $vpost['hour'])){
+
+               $available = $this->uc->create('',
                           $vpost['dni_advisor'],
                           $vpost['date'],
                           $vpost['hour'],
@@ -228,10 +272,7 @@ class AvailableService extends Service {
          $vpost = json_decode(file_get_contents('php://input'),true);
          $vpost['code_available_time'] = $this->keys[count($this->keys)-1];
 
-         $opciones = isset($vpost['dni_advisor'])||
-                     isset($vpost['date'])||
-                     isset($vpost['hour'])||
-                     isset($vpost['status_available']);
+         $opciones = isset($vpost['status_available']);
 
          if ($opciones) {
 
