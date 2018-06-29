@@ -280,10 +280,10 @@ class DetailService extends Service {
             $detail = $this->uc->findById($vpost['code_detail']);
 
             if ($detail) {
-               !isset($vpost['dni_advisor']) ? $vpost['dni_advisor']=$detail->dni_advisor : "";
+               $vpost['dni_advisor']=$detail->dni_advisor;
+               $vpost['code_university']=$detail->code_university;
+               $vpost['code_grade']=$detail->code_grade;
 
-               !isset($vpost['code_university']) ? $vpost['code_university']=$detail->code_university : "";
-               !isset($vpost['code_grade']) ? $vpost['code_grade']=$detail->code_grade : "";
                !isset($vpost['year_egress']) ? $vpost['year_egress']=$detail->year_egress : "";
 
 

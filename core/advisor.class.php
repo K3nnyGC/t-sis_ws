@@ -189,6 +189,11 @@ class AdvisorService extends Service {
         $tag = $this->keys[count($this->keys)-1];
       }
 
+      if ($this->keys[count($this->keys)-1]=="themes"){
+        $dni = $this->keys[count($this->keys)-2];
+        $tag = $this->keys[count($this->keys)-1];
+      }
+
       
       if(isset($dni)&!isset($tag)){
          $advisor = $this->uc->findById($dni);
@@ -268,6 +273,31 @@ class AdvisorService extends Service {
                 } else {
                   $this->code=404;
                   $this->message = "No existen Disponibilidades para el Asesor";
+                  $this->data = NULL;
+                }
+                return true;
+              } else {
+                  $this->code=404;
+                  $this->message = "El Asesor no existe";
+                  $this->data = NULL;
+              }
+            break;
+            case "themes":
+              $tm = new ThemeManager();
+              $advisor = $this->uc->findById($dni);
+              if ($advisor){
+                $themes = $tm->showByAdvisor($advisor->dni_advisor);
+                if($themes){
+                  $themesarray=[];
+                  for ($i=0; $i < count($themes) ; $i++) { 
+                       $themesarray[] = (array) $themes[$i];
+                  }
+                  $this->code=200;
+                  $this->message = "Temas del Asesor encontrados";
+                  $this->data = $themesarray;
+                } else {
+                  $this->code=404;
+                  $this->message = "No existen Temas para el Asesor";
                   $this->data = NULL;
                 }
                 return true;

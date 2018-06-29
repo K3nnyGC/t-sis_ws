@@ -279,10 +279,10 @@ class AvailableService extends Service {
             $available = $this->uc->findById($vpost['code_available_time']);
 
             if ($available) {
-               !isset($vpost['dni_advisor']) ? $vpost['dni_advisor']=$available->dni_advisor : "";
-
-               !isset($vpost['date']) ? $vpost['date']=$available->date : "";
-               !isset($vpost['hour']) ? $vpost['hour']=$available->hour : "";
+               $vpost['dni_advisor']=$available->dni_advisor;
+               $vpost['date']=$available->date;
+               $vpost['hour']=$available->hour;
+               
                !isset($vpost['status_available']) ? $vpost['status_available']=$available->status_available : "";
 
 

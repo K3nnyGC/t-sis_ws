@@ -9,6 +9,7 @@ include_once "advisor.class.php";
 include_once "student.class.php";
 include_once "available.class.php";
 include_once "detail.class.php";
+include_once "knowledge.class.php";
 
 
 ?>
