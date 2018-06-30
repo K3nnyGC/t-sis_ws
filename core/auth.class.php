@@ -19,6 +19,31 @@ class Auth {
 				self::$code = 401;
 				return false;
 			} else {
+				$sm = new StudentManager();
+				$am = new AdvisorManager();
+				$advisor = $am->findById($_SERVER['PHP_AUTH_USER']);
+				$advisor ? "" : $student = $sm->findById($_SERVER['PHP_AUTH_USER']);
+
+				if ($advisor){
+					if ($advisor->pasword == $_SERVER['PHP_AUTH_PW'] ){
+						return true;
+					} else {
+						self::$message = "Solicitud Invalida: Usuario no autorizado!";
+						self::$code = 401;
+						return false;
+					}
+				}
+
+				if ($student){
+					if ($student->password == $_SERVER['PHP_AUTH_PW'] ){
+						return true;
+					} else {
+						self::$message = "Solicitud Invalida: Usuario no autorizado!";
+						self::$code = 401;
+						return false;
+					}
+				}
+				
 				if (($_SERVER['PHP_AUTH_USER']!="Aladdin")||($_SERVER['PHP_AUTH_PW']!="open sesame")) {
 					self::$message = "Solicitud Invalida: Usuario no autorizado!";
 					self::$code = 401;
@@ -28,7 +53,7 @@ class Auth {
 		}
 
 	}
-	
+
 	public static function response($status,$status_message,$data){
 		header("HTTP/1.1 ".$status);
 		$response=[
