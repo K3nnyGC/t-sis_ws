@@ -157,6 +157,11 @@ class StudentService extends Service {
          $tag = $this->keys[count($this->keys)-1];
       }
 
+      if ($this->keys[count($this->keys)-1]=="contracts"){
+        $dni = $this->keys[count($this->keys)-2];
+        $tag = $this->keys[count($this->keys)-1];
+      }
+
       
       if(isset($dni)&!isset($tag)){
          $student = $this->uc->findById($dni);
@@ -190,6 +195,40 @@ class StudentService extends Service {
             $this->data = NULL;
          }
          return true;
+      } 
+
+      if (isset($dni)&isset($tag)){
+        switch ($tag) {
+            case "contracts":
+              $cm = new ContractManager();
+              $student = $this->uc->findById($dni);
+              if ($student){
+                $contracts = $cm->showByStudent($student->dni_student);
+                if($contracts){
+                  $contractsarray=[];
+                  for ($i=0; $i < count($contracts) ; $i++) { 
+                       $contractsarray[] = (array) $contracts[$i];
+                  }
+                  $this->code=200;
+                  $this->message = "Contratos del Estudiante encontrados";
+                  $this->data = $contractsarray;
+                } else {
+                  $this->code=404;
+                  $this->message = "No existen Contratos para el Estudiante";
+                  $this->data = NULL;
+                }
+                return true;
+              } else {
+                  $this->code=404;
+                  $this->message = "El Estudiante no existe";
+                  $this->data = NULL;
+              }
+            break;
+          
+          default:
+            break;
+        }
+
       } else {
          $this->code=400;
          $this->message = "Solicitud Invalida";

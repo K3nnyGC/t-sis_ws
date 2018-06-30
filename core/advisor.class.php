@@ -194,6 +194,11 @@ class AdvisorService extends Service {
         $tag = $this->keys[count($this->keys)-1];
       }
 
+      if ($this->keys[count($this->keys)-1]=="contracts"){
+        $dni = $this->keys[count($this->keys)-2];
+        $tag = $this->keys[count($this->keys)-1];
+      }
+
       
       if(isset($dni)&!isset($tag)){
          $advisor = $this->uc->findById($dni);
@@ -298,6 +303,31 @@ class AdvisorService extends Service {
                 } else {
                   $this->code=404;
                   $this->message = "No existen Temas para el Asesor";
+                  $this->data = NULL;
+                }
+                return true;
+              } else {
+                  $this->code=404;
+                  $this->message = "El Asesor no existe";
+                  $this->data = NULL;
+              }
+            break;
+            case "contracts":
+              $cm = new ContractManager();
+              $advisor = $this->uc->findById($dni);
+              if ($advisor){
+                $contracts = $cm->showByAdvisor($advisor->dni_advisor);
+                if($contracts){
+                  $contractsarray=[];
+                  for ($i=0; $i < count($contracts) ; $i++) { 
+                       $contractsarray[] = (array) $contracts[$i];
+                  }
+                  $this->code=200;
+                  $this->message = "Contratos del Asesor encontrados";
+                  $this->data = $contractsarray;
+                } else {
+                  $this->code=404;
+                  $this->message = "No existen Contratos para el Asesor";
                   $this->data = NULL;
                 }
                 return true;

@@ -6,4 +6,5 @@ RewriteRule api/student api/student.php
 RewriteRule api/detail api/detail.php
 RewriteRule api/available api/available.php
 RewriteRule api/theme api/knowledge.php
+RewriteRule api/contract api/contract.php
 RewriteRule Validar aplication/validate.php

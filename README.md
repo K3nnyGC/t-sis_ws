@@ -31,7 +31,10 @@ GET POST PUT DELETE /api/advisor<br>
 GET                 /api/advisor/{id}/details<br>
 GET                 /api/advisor/{id}/availables<br>
 GET                 /api/advisor/{id}/themes<br>
+GET                 /api/advisor/{id}/contracts<br>
 GET POST PUT DELETE /api/student<br>
+GET                 /api/student/{id}/contracts<br>
 GET POST PUT DELETE /api/available<br>
 GET POST PUT DELETE /api/detail<br>
 GET POST PUT DELETE /api/theme<br>
+GET POST PUT DELETE /api/contract<br>
