@@ -86,6 +86,31 @@ Class AdvisorManager extends Conection {
     }
     return false;
    }
+   
+   public function findByMail($email){
+    $data = $this->make_query("SELECT * FROM $this->table where email = '$email'");
+    if ($data){
+      if ($row = $data->fetch_assoc()){
+        return new Advisor($row['dni_advisor'],
+                               $row['name'],
+                               $row['lastname'],
+                               $row['email'],
+                               $row['address'],
+                               $row['pasword'],
+                               $row['phone'],
+                               $row['card'],
+                               $row['credit_card'],
+                               $row['latitude'],
+                               $row['longitude'],
+                               $row['status_advisor'],
+                               $row['prom_score'],
+                               $row['token'],
+                               $row['picture']);
+      }
+      return false;
+    }
+    return false;
+   }
 
 
 
@@ -198,6 +223,7 @@ class AdvisorService extends Service {
         $dni = $this->keys[count($this->keys)-2];
         $tag = $this->keys[count($this->keys)-1];
       }
+      
 
       
       if(isset($dni)&!isset($tag)){

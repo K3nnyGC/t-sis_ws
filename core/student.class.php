@@ -74,6 +74,27 @@ Class StudentManager extends Conection {
       }
       return false;
    }
+   
+   public function findByMail($email){
+      $data = $this->make_query("SELECT * FROM $this->table where email = '$email'");
+      if ($data){
+         if ($row = $data->fetch_assoc()){
+            return new Student($row['dni_student'],
+                               $row['name'],
+                               $row['lastname'],
+                               $row['email'],
+                               $row['address'],
+                               $row['password'],
+                               $row['phone'],
+                               $row['card'],
+                               $row['token'],
+                               $row['picture'],
+                               $row['status_student']);
+         }
+         return false;
+      }
+      return false;
+   }
 
    public function show(){
          $data = $this->make_query("SELECT * FROM $this->table ");

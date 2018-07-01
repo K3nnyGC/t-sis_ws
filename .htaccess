@@ -8,3 +8,4 @@ RewriteRule api/available api/available.php
 RewriteRule api/theme api/knowledge.php
 RewriteRule api/contract api/contract.php
 RewriteRule Validar aplication/validate.php
+RewriteRule api/login api/login.php

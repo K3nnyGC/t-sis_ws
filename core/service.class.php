@@ -7,7 +7,7 @@ class Service {
 		$this->action = $_SERVER['REQUEST_METHOD'];
      	$this->keys = explode("/", $_SERVER['REQUEST_URI']);
      	$this->code = 200;
-      	$this->message = "";
+      	$this->message = "No implementado";
       	$this->data = NULL;
 
       	switch ($this->action) {
@@ -53,7 +53,9 @@ class Service {
 
 		$response['data']=$this->data;
 	
-		$json_response = json_encode($response);
+		//$json_response = json_encode($response);
+		$this->data == NULL ? $this->data = ['Message' => $this->message] : "";
+		$json_response = json_encode($this->data);
 		echo $json_response;
 	}
 }

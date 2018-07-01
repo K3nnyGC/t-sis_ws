@@ -11,6 +11,7 @@ include_once "available.class.php";
 include_once "detail.class.php";
 include_once "knowledge.class.php";
 include_once "contract.class.php";
+include_once "login.class.php";
 
 
 ?>
