@@ -9,3 +9,4 @@ RewriteRule api/theme api/knowledge.php
 RewriteRule api/contract api/contract.php
 RewriteRule Validar aplication/validate.php
 RewriteRule api/login api/login.php
+RewriteRule api/career api/career.php

@@ -38,5 +38,6 @@ GET POST PUT DELETE /api/available<br>
 GET POST PUT DELETE /api/detail<br>
 GET POST PUT DELETE /api/theme<br>
 GET POST PUT DELETE /api/contract<br>
-POST                /api/advisor<br>
-POST                /api/student<br>
+GET POST PUT DELETE /api/career<br>
+POST                /api/login/advisor<br>
+POST                /api/login/student<br>

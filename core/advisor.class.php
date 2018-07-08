@@ -509,7 +509,13 @@ class AdvisorService extends Service {
                !isset($vpost['lastname']) ? $vpost['lastname']=$advisor->lastname : "";
                !isset($vpost['email']) ? $vpost['email']=$advisor->email : "";
                !isset($vpost['address']) ? $vpost['address']=$advisor->address : "";
-               isset($vpost['pasword']) ? $vpost['pasword']=md5($vpost['pasword']) : "";
+               if (isset($vpost['pasword'])){
+                if (md5($vpost['pasword'])==$advisor->pasword){
+                  $vpost['pasword']=$advisor->pasword;
+                } else {
+                  $vpost['pasword']=md5($vpost['pasword']);
+                }
+               }
                !isset($vpost['pasword']) ? $vpost['pasword']=$advisor->pasword : "";
                !isset($vpost['phone']) ? $vpost['phone']=$advisor->phone : "";
                !isset($vpost['card']) ? $vpost['card']=$advisor->card : "";
