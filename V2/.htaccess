@@ -1,0 +1,16 @@
+Options -Indexes
+RewriteEngine On    # Turn on the rewriting engine
+#RewriteRule ^user/([a-zA-Z_-]*)$ user.php?dni=$1 [NC,L]
+RewriteRule api/advisor api/advisor.php
+RewriteRule api/student api/student.php
+RewriteRule api/detail api/detail.php
+RewriteRule api/available api/available.php
+RewriteRule api/theme api/knowledge.php
+RewriteRule api/contract api/contract.php
+RewriteRule Validar aplication/validate.php
+RewriteRule api/login api/login.php
+RewriteRule api/career api/career.php
+RewriteRule api/hour api/hour.php
+RewriteRule api/universit api/university.php
+RewriteRule api/grade api/grade.php
+RewriteRule api/categor api/category.php
